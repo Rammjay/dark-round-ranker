@@ -95,7 +95,7 @@ const ScoreCounter = () => {
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-neon-green glow-green">
-            TOURNAMENT TRACKER
+            AMPS
           </h1>
           <p className="text-muted-foreground">Round {currentRound}</p>
         </div>
@@ -185,7 +185,7 @@ const ScoreCounter = () => {
                   
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold truncate text-foreground">{team.name}</h3>
+                      <h3 className="font-semibold truncate text-foreground text-lg">{team.name}</h3>
                       <Button
                         variant="ghost"
                         size="sm"
