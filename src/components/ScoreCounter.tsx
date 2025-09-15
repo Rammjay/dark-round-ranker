@@ -42,7 +42,8 @@ const ScoreCounter = () => {
   const updateScore = (teamId: string, increment: number) => {
     setTeams(teams.map(team => 
       team.id === teamId 
-        ? { ...team, score: Math.max(0, team.score + increment) }
+        ? { ...team, score: Math.max(0, team.score + increment*5
+                                    ) }
         : team
     ));
   };
