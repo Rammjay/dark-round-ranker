@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -11,18 +11,47 @@ interface Team {
   score: number;
 }
 
+const DEFAULT_TEAMS: Team[] = [
+  { id: "t1", name: "Team A", score: 0 },
+  { id: "t2", name: "Team B", score: 0 },
+  { id: "t3", name: "Team C", score: 0 },
+];
+
 const ScoreCounter = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<Team[]>(() => {
+    const saved = localStorage.getItem("teams");
+    return saved ? JSON.parse(saved) : DEFAULT_TEAMS;
+  });
+
   const [newTeamName, setNewTeamName] = useState("");
-  const [currentRound, setCurrentRound] = useState(1);
-  const [advanceCount, setAdvanceCount] = useState(2);
+  const [currentRound, setCurrentRound] = useState(() => {
+    const saved = localStorage.getItem("currentRound");
+    return saved ? parseInt(saved) : 1;
+  });
+  const [advanceCount, setAdvanceCount] = useState(() => {
+    const saved = localStorage.getItem("advanceCount");
+    return saved ? parseInt(saved) : 2;
+  });
+
+  // 🔄 Persist data to localStorage whenever state changes
+  useEffect(() => {
+    localStorage.setItem("teams", JSON.stringify(teams));
+  }, [teams]);
+
+  useEffect(() => {
+    localStorage.setItem("currentRound", currentRound.toString());
+  }, [currentRound]);
+
+  useEffect(() => {
+    localStorage.setItem("advanceCount", advanceCount.toString());
+  }, [advanceCount]);
 
   const addTeam = () => {
     if (!newTeamName.trim()) {
       toast.error("Team name cannot be empty");
       return;
     }
-    
+
     if (teams.some(team => team.name.toLowerCase() === newTeamName.toLowerCase())) {
       toast.error("Team name already exists");
       return;
@@ -40,10 +69,9 @@ const ScoreCounter = () => {
   };
 
   const updateScore = (teamId: string, increment: number) => {
-    setTeams(teams.map(team => 
-      team.id === teamId 
-        ? { ...team, score: Math.max(0, team.score + increment*5
-                                    ) }
+    setTeams(teams.map(team =>
+      team.id === teamId
+        ? { ...team, score: Math.max(0, team.score + increment * 5) }
         : team
     ));
   };
@@ -65,38 +93,34 @@ const ScoreCounter = () => {
       return;
     }
 
-    // Sort teams by score (highest first) to determine who advances
     const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
     const advancingTeams = sortedTeams.slice(0, advanceCount);
-    
-    // Check if only one team will remain (winner scenario)
+
     if (advancingTeams.length === 1) {
       toast.success(`🏆 WINNER: ${advancingTeams[0].name}! Tournament Complete!`, {
         duration: 5000,
       });
-      // Reset scores for the winner
       const resetTeams = advancingTeams.map(team => ({ ...team, score: 0 }));
       setTeams(resetTeams);
       setCurrentRound(currentRound + 1);
       return;
     }
-    
-    // Reset scores for advancing teams
+
     const resetTeams = advancingTeams.map(team => ({ ...team, score: 0 }));
-    
+
     setTeams(resetTeams);
     setCurrentRound(currentRound + 1);
-    
+
     toast.success(`Round ${currentRound} complete! ${advanceCount} teams advance to Round ${currentRound + 1}`);
   };
 
   const resetTournament = () => {
-    setTeams([]);
+    setTeams(DEFAULT_TEAMS);
     setCurrentRound(1);
+    setAdvanceCount(2);
     toast.success("Tournament reset");
   };
 
-  // Helper function to get team ranking without changing display order
   const getTeamRank = (teamId: string) => {
     const sortedByScore = [...teams].sort((a, b) => b.score - a.score);
     return sortedByScore.findIndex(team => team.id === teamId);
@@ -146,9 +170,9 @@ const ScoreCounter = () => {
                 />
                 <span className="text-sm">teams</span>
               </div>
-              
+
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={advanceToNextRound}
                   disabled={teams.length === 0}
                   variant="secondary"
@@ -157,7 +181,7 @@ const ScoreCounter = () => {
                   <Trophy className="w-4 h-4 mr-2" />
                   Next Round
                 </Button>
-                <Button 
+                <Button
                   onClick={resetTournament}
                   variant="destructive"
                   className="opacity-75 hover:opacity-100"
@@ -182,12 +206,12 @@ const ScoreCounter = () => {
             {teams.map((team) => {
               const rank = getTeamRank(team.id);
               const isAdvancing = rank < advanceCount;
-              
+
               return (
-                <Card 
-                  key={team.id} 
+                <Card
+                  key={team.id}
                   className={`p-6 bg-dark-surface border-border relative ${
-                    isAdvancing ? 'ring-2 ring-neon-green glow-green' : ''
+                    isAdvancing ? "ring-2 ring-neon-green glow-green" : ""
                   }`}
                 >
                   {isAdvancing && (
@@ -195,10 +219,12 @@ const ScoreCounter = () => {
                       {rank + 1}
                     </div>
                   )}
-                  
+
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold truncate text-foreground text-lg">{team.name}</h3>
+                      <h3 className="font-semibold truncate text-foreground text-lg">
+                        {team.name}
+                      </h3>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -208,9 +234,11 @@ const ScoreCounter = () => {
                         ×
                       </Button>
                     </div>
-                    
+
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-neon-blue mb-2">{team.score}</div>
+                      <div className="text-3xl font-bold text-neon-blue mb-2">
+                        {team.score}
+                      </div>
                       <div className="flex gap-3 justify-center">
                         <Button
                           variant="outline"
