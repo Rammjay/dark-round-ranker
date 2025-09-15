@@ -27,6 +27,7 @@ const DEFAULT_TEAMS: Team[] = [
   { id: "t13", name: "wought", score: 0 },
   { id: "t14", name: "spirit of tfi ", score: 0 },
   { id: "t15", name: "kanyaraasi charan", score: 0 },
+  { id: "t16", name: "mangalassery OGs", score: 0 },
   
   
 ];
