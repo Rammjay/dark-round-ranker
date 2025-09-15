@@ -68,6 +68,18 @@ const ScoreCounter = () => {
     const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
     const advancingTeams = sortedTeams.slice(0, advanceCount);
     
+    // Check if only one team will remain (winner scenario)
+    if (advancingTeams.length === 1) {
+      toast.success(`🏆 WINNER: ${advancingTeams[0].name}! Tournament Complete!`, {
+        duration: 5000,
+      });
+      // Reset scores for the winner
+      const resetTeams = advancingTeams.map(team => ({ ...team, score: 0 }));
+      setTeams(resetTeams);
+      setCurrentRound(currentRound + 1);
+      return;
+    }
+    
     // Reset scores for advancing teams
     const resetTeams = advancingTeams.map(team => ({ ...team, score: 0 }));
     
@@ -198,22 +210,22 @@ const ScoreCounter = () => {
                     
                     <div className="text-center">
                       <div className="text-3xl font-bold text-neon-blue mb-2">{team.score}</div>
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex gap-3 justify-center">
                         <Button
                           variant="outline"
-                          size="sm"
+                          size="default"
                           onClick={() => updateScore(team.id, -1)}
-                          className="w-8 h-8 p-0 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          className="w-12 h-12 p-0 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-5 h-5" />
                         </Button>
                         <Button
                           variant="outline"
-                          size="sm"
+                          size="default"
                           onClick={() => updateScore(team.id, 1)}
-                          className="w-8 h-8 p-0 border-neon-green text-neon-green hover:bg-neon-green hover:text-black"
+                          className="w-12 h-12 p-0 border-neon-green text-neon-green hover:bg-neon-green hover:text-black"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-5 h-5" />
                         </Button>
                       </div>
                     </div>
