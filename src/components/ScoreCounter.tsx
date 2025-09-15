@@ -12,9 +12,23 @@ interface Team {
 }
 
 const DEFAULT_TEAMS: Team[] = [
-  { id: "t1", name: "Team A", score: 0 },
-  { id: "t2", name: "Team B", score: 0 },
-  { id: "t3", name: "Team C", score: 0 },
+  { id: "t1", name: "ambaddies", score: 0 },
+  { id: "t2", name: "maheswar nte pillaar ", score: 0 },
+  { id: "t3", name: "cypher yoda", score: 0 },
+  { id: "t4", name: "dawn ", score: 0 },
+  { id: "t5", name: "eclipsera", score: 0 },
+  { id: "t6", name: "themarauders", score: 0 },
+  { id: "t7", name: "hunters", score: 0 },
+  { id: "t8", name: "filmfinders", score: 0 },
+  { id: "t9", name: "team orion", score: 0 },
+  { id: "t10", name: "goldenfleece chaser", score: 0 },
+  { id: "t11", name: "kanyaraasi", score: 0 },
+  { id: "t12", name: "jai balayya", score: 0 },
+  { id: "t13", name: "wought", score: 0 },
+  { id: "t14", name: "spirit of tfi ", score: 0 },
+  { id: "t15", name: "kanyaraasi charan", score: 0 },
+  
+  
 ];
 
 const ScoreCounter = () => {
@@ -30,7 +44,7 @@ const ScoreCounter = () => {
   });
   const [advanceCount, setAdvanceCount] = useState(() => {
     const saved = localStorage.getItem("advanceCount");
-    return saved ? parseInt(saved) : 2;
+    return saved ? parseInt(saved) : 0;
   });
 
   // 🔄 Persist data to localStorage whenever state changes
